@@ -2,6 +2,7 @@ package br.com.desafio.ntconsult.service;
 
 import br.com.desafio.ntconsult.exception.GlobalException;
 import br.com.desafio.ntconsult.models.dto.form.VotoForm;
+import br.com.desafio.ntconsult.models.dto.view.RetornoValidadorCpfView;
 import br.com.desafio.ntconsult.models.dto.view.VotoView;
 import br.com.desafio.ntconsult.models.entity.Pauta;
 import br.com.desafio.ntconsult.models.entity.Voto;
@@ -23,6 +24,7 @@ import java.util.Optional;
 public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
 
     private final PautaService pautaService;
+    private final IntegracaoRestTemplateService integracaoRestTemplateService;
     private final VotoRepository votoRepository;
     private final VotoMapper votoMapper;
 
@@ -34,6 +36,12 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
 
         try {
             log.info(">> save [votoForm={}]", votoForm);
+
+            RetornoValidadorCpfView validadorCpf = integracaoRestTemplateService.validarCPF(votoForm.getCpf());
+
+            if(!validadorCpf.getValid()) {
+                throw new GlobalException("CPF inválido.");
+            }
 
             Optional<Pauta> pauta = pautaService.findPautaByNome(votoForm.getNomePauta());
 

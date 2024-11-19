@@ -14,3 +14,8 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
+
+url:
+  cpf: https://api.invertexto.com/v1/validator
+  token: 16204|OedYicokYDVgT2EgopqN11crVPjpmxVJ
+  type: cpf
