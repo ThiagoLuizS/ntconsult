@@ -1,5 +1,7 @@
-package br.com.desafio.ntconsult.domain.entity;
+package br.com.desafio.ntconsult.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,8 +29,9 @@ public class Pauta {
     @Column(name = "DESCRICAO", nullable = false)
     private String descricao;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "pauta")
-    private List<Votos> votos;
+    private List<Voto> votos;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATA_CADASTRO")
@@ -37,4 +40,5 @@ public class Pauta {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ABERTO_ATE")
     private Date abertoAte;
+
 }
