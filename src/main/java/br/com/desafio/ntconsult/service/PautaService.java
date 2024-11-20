@@ -38,8 +38,6 @@ public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
 
         try {
             log.info(">> save [pautaForm={}]", pautaForm);
-            LocalDateTime now = LocalDateTime.now().plusMinutes(1);
-            ZonedDateTime newNow = now.atZone(ZoneId.systemDefault());
 
             Optional<Pauta> pautaOptional = findPautaByNome(pautaForm.getNome());
 
@@ -47,14 +45,7 @@ public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
                 throw new GlobalException("Essa pauta já existe, cadastre com outro nome.");
             }
 
-            if(pautaForm.getTempoSessao() > 0) {
-                now = LocalDateTime.now().plusMinutes(pautaForm.getTempoSessao());
-                newNow = now.atZone(ZoneId.systemDefault());
-            }
-
-            pautaForm.setAbertoAte(Date.from(newNow.toInstant()));
-            Pauta pauta = getConverter().formToEntity(pautaForm);
-            pauta = getRepository().save(pauta);
+            Pauta pauta = converterESalvar(pautaForm);
 
             PautaView view = getConverter().entityToView(pauta);
 
@@ -72,16 +63,31 @@ public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
         }
     }
 
+    private Pauta converterESalvar(PautaForm pautaForm) {
+        LocalDateTime now = LocalDateTime.now().plusMinutes(1);
+        ZonedDateTime newNow = now.atZone(ZoneId.systemDefault());
+
+        if(pautaForm.getTempoSessao() > 0) {
+            now = LocalDateTime.now().plusMinutes(pautaForm.getTempoSessao());
+            newNow = now.atZone(ZoneId.systemDefault());
+        }
+
+        pautaForm.setAbertoAte(Date.from(newNow.toInstant()));
+        Pauta pauta = getConverter().formToEntity(pautaForm);
+        pauta = getRepository().save(pauta);
+        return pauta;
+    }
+
     public long tempoSessao(Pauta pauta) {
         ZonedDateTime abertoAte = pauta.getAbertoAte().toInstant().atZone(ZoneId.systemDefault());
         ZonedDateTime now = ZonedDateTime.now();
 
-       return ChronoUnit.SECONDS.between(abertoAte, now);
+       return ChronoUnit.SECONDS.between(now, abertoAte);
     }
 
     public void validarSessaoPauta(Pauta pauta) {
         if(tempoSessao(pauta) <= 0) {
-            throw new GlobalException("Pauta já foi encerrada");
+            throw new GlobalException("Pauta já foi encerrada.");
         }
     }
 

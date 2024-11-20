@@ -29,10 +29,6 @@ public class Pauta {
     @Column(name = "DESCRICAO", nullable = false)
     private String descricao;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "pauta")
-    private List<Voto> votos;
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATA_CADASTRO")
     private Date dataCadastro;

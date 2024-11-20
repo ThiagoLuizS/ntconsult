@@ -53,13 +53,7 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
 
             pautaService.validarSessaoPauta(pauta.get());
 
-            Voto voto = getConverter().formToEntity(votoForm);
-
-            voto.setOpcao(OpcaoVoto.valueOf(votoForm.getOpcao()));
-
-            voto.setPauta(pauta.get());
-
-            voto = getRepository().save(voto);
+            Voto voto = converterESalvar(votoForm, pauta);
 
             VotoView view = getConverter().entityToView(voto);
 
@@ -76,6 +70,17 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
 
             throw new GlobalException("Não foi possivel registrar seu voto.");
         }
+    }
+
+    private Voto converterESalvar(VotoForm votoForm, Optional<Pauta> pauta) {
+        Voto voto = getConverter().formToEntity(votoForm);
+
+        voto.setOpcao(OpcaoVoto.valueOf(votoForm.getOpcao()));
+
+        voto.setPauta(pauta.get());
+
+        voto = getRepository().save(voto);
+        return voto;
     }
 
     @Override
