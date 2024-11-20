@@ -37,4 +37,6 @@ public class Pauta {
     @Column(name = "ABERTO_ATE")
     private Date abertoAte;
 
+    @Column(name = "CALCULADO")
+    private boolean calculado;
 }

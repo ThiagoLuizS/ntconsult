@@ -14,6 +14,24 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    stream:
+      input-bindings: calcular-voto
+      output-bindings: calcular-voto
+
+topic:
+  calcular-votos-pauta: calcular-votos-pauta
+
+camel:
+  component:
+    quartz2:
+      cron:
+        v1: cron:tab?schedule=0/60+*+*+*+*+?
 
 url:
   cpf: https://api.invertexto.com/v1/validator

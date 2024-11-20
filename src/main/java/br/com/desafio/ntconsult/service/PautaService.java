@@ -7,11 +7,14 @@ import br.com.desafio.ntconsult.models.entity.Pauta;
 import br.com.desafio.ntconsult.models.mapper.MapStructMapper;
 import br.com.desafio.ntconsult.models.mapper.PautaMapper;
 import br.com.desafio.ntconsult.repository.PautaRepository;
+import br.com.desafio.ntconsult.service.message.PautaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -19,6 +22,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,6 +33,7 @@ public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
 
     private final PautaRepository pautaRepository;
     private final PautaMapper pautaMapper;
+    private final PautaProducer pautaProducer;
 
     /**
      * #ThiagoLuizS
@@ -76,6 +81,27 @@ public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
         Pauta pauta = getConverter().formToEntity(pautaForm);
         pauta = getRepository().save(pauta);
         return pauta;
+    }
+
+    @Transactional
+    public void atualizarPautaCalculada(String nome) {
+        try {
+            pautaRepository.atualizarPautaCalculada(nome);
+        } catch (Exception e) {
+            log.error("<< Erro ao atualizar a pauta calculada [nome={}]", nome, e);
+        }
+    }
+
+    public void buscarPautasEncerradas() {
+        List<Pauta> pautas = pautaRepository.findAllPautaEncerradas();
+
+        if(CollectionUtils.isEmpty(pautas)) {
+            log.info("<< Nenhuma pauta para ser calculada.");
+        }
+
+        pautas.parallelStream().forEach(pauta -> {
+            pautaProducer.solicitarCalculoVotacaoPauta(pauta.getNome());
+        });
     }
 
     public long tempoSessao(Pauta pauta) {

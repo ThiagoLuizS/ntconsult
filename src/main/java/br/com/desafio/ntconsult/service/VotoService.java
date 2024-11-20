@@ -2,7 +2,6 @@ package br.com.desafio.ntconsult.service;
 
 import br.com.desafio.ntconsult.exception.GlobalException;
 import br.com.desafio.ntconsult.models.dto.form.VotoForm;
-import br.com.desafio.ntconsult.models.dto.view.RetornoValidadorCpfView;
 import br.com.desafio.ntconsult.models.dto.view.VotoView;
 import br.com.desafio.ntconsult.models.entity.Pauta;
 import br.com.desafio.ntconsult.models.entity.Voto;
@@ -12,13 +11,11 @@ import br.com.desafio.ntconsult.models.mapper.VotoMapper;
 import br.com.desafio.ntconsult.repository.VotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -35,8 +32,10 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
      * #ThiagoLuizS
      * Método responsavel por persistir o voto para cada pauta
      * O método está cacheado não permitindo o CPF votar na mesma pauta mais de uma vez.
+     * Tendo essa validação o método irá retornar do caching a ultima votação cacheada feita pelo CPF.
+     * Caso o cache expire o método irá validar se o cpf já votou.
      * */
-    @Cacheable("voto")
+    @Cacheable(value = "voto", key = "#votoForm.nomePauta.concat('-').concat(#votoForm.cpf)")
     public CompletableFuture<VotoView> save(VotoForm votoForm) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -49,6 +48,8 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
                 validarOpcao(votoForm);
 
                 pautaService.validarSessaoPauta(pauta);
+
+                validarVotoByCpfAndNomePauta(votoForm.getCpf(), votoForm.getNomePauta());
 
                 Voto voto = converterESalvar(votoForm, pauta);
 
@@ -70,12 +71,25 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
         });
     }
 
+    private void validarVotoByCpfAndNomePauta(String cpf, String nomePauta) {
+        int count = votoRepository.countAllByCpfAndPautaNome(cpf, nomePauta);
+        if(count > 0) {
+            throw new GlobalException("Este CPF já efetuou seu voto.");
+        }
+    }
+
+    public void calcularVotos(String pautaName) {
+        int countVotosSim = votoRepository.countAllByOpcaoIsAndPautaNome(OpcaoVoto.SIM, pautaName);
+        int countVotosNao = votoRepository.countAllByOpcaoIsAndPautaNome(OpcaoVoto.NAO, pautaName);
+        pautaService.atualizarPautaCalculada(pautaName);
+        log.info(">> SOMA DOS VOTOS [PAUTA={}, SIM={} N={}] <<", pautaName, countVotosSim, countVotosNao);
+    }
+
     private static void validarOpcao(VotoForm votoForm) {
         if(Objects.isNull(votoForm.getOpcao())) {
             throw new GlobalException("A opção informada é inválida.");
         }
     }
-
 
     private Voto converterESalvar(VotoForm votoForm, Pauta pauta) {
         Voto voto = getConverter().formToEntity(votoForm);

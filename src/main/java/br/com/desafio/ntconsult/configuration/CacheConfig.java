@@ -21,7 +21,7 @@ public class CacheConfig {
     }
 
     @CacheEvict(allEntries = true, cacheNames = "voto")
-    @Scheduled(fixedDelay = 10 * 60 * 1000 ,  initialDelay = 500)
+    @Scheduled(fixedDelay = 10 * 60 * 10000 ,  initialDelay = 500)
     public void removeCache() {
         log.info(">> Remover cache voto");
     }
