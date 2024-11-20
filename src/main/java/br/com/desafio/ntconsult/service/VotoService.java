@@ -12,6 +12,8 @@ import br.com.desafio.ntconsult.models.mapper.VotoMapper;
 import br.com.desafio.ntconsult.repository.VotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,9 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
     /**
      * #ThiagoLuizS
      * Método responsavel por persistir o voto para cada pauta
+     * O método está cacheado não permitindo o CPF votar na mesma pauta mais de uma vez.
      * */
+    @Cacheable("voto")
     public VotoView save(VotoForm votoForm) {
 
         try {
@@ -80,6 +84,7 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
         voto.setPauta(pauta.get());
 
         voto = getRepository().save(voto);
+
         return voto;
     }
 
