@@ -34,8 +34,8 @@ public class Pauta {
     private Date dataCadastro;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "ABERTO_ATE")
-    private Date abertoAte;
+    @Column(name = "EXPIRACAO_SESSAO")
+    private Date expiracaoSessao;
 
     @Column(name = "CALCULADO")
     private boolean calculado;

@@ -15,7 +15,7 @@ public interface PautaRepository extends JpaRepository<Pauta, Long> {
 
     Optional<Pauta> findPautaByNome(String nome);
 
-    @Query("select p From Pauta p where p.abertoAte < CURRENT_TIMESTAMP and p.calculado = false")
+    @Query("select p From Pauta p where p.expiracaoSessao < CURRENT_TIMESTAMP and p.calculado = false")
     List<Pauta> findAllPautaEncerradas();
 
     @Modifying

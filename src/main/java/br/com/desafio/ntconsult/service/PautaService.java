@@ -11,7 +11,6 @@ import br.com.desafio.ntconsult.service.message.PautaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,15 +20,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
+
+    private static final int DEFAULT_MINUTES = 1;
 
     private final PautaRepository pautaRepository;
     private final PautaMapper pautaMapper;
@@ -69,17 +68,18 @@ public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
     }
 
     private Pauta converterESalvar(PautaForm pautaForm) {
-        LocalDateTime now = LocalDateTime.now().plusMinutes(1);
+        LocalDateTime now = LocalDateTime.now().plusMinutes(DEFAULT_MINUTES);
         ZonedDateTime newNow = now.atZone(ZoneId.systemDefault());
 
-        if(pautaForm.getTempoSessao() > 0) {
-            now = LocalDateTime.now().plusMinutes(pautaForm.getTempoSessao());
+        if(pautaForm.getDuracaoSessaoMinuto() > 0) {
+            now = LocalDateTime.now().plusMinutes(pautaForm.getDuracaoSessaoMinuto());
             newNow = now.atZone(ZoneId.systemDefault());
         }
 
-        pautaForm.setAbertoAte(Date.from(newNow.toInstant()));
         Pauta pauta = getConverter().formToEntity(pautaForm);
+        pauta.setExpiracaoSessao(Date.from(newNow.toInstant()));
         pauta = getRepository().save(pauta);
+
         return pauta;
     }
 
@@ -105,7 +105,7 @@ public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
     }
 
     public long tempoSessao(Pauta pauta) {
-        ZonedDateTime abertoAte = pauta.getAbertoAte().toInstant().atZone(ZoneId.systemDefault());
+        ZonedDateTime abertoAte = pauta.getExpiracaoSessao().toInstant().atZone(ZoneId.systemDefault());
         ZonedDateTime now = ZonedDateTime.now();
 
        return ChronoUnit.SECONDS.between(now, abertoAte);
