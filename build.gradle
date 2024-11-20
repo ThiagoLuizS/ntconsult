@@ -34,6 +34,8 @@ dependencies {
 	implementation 'org.apache.commons:commons-collections4:4.4'
 	implementation 'org.modelmapper:modelmapper:3.2.0'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+	implementation 'org.springframework.boot:spring-boot-starter-cache:3.3.5'
+	implementation 'org.springframework:spring-context-support:6.2.0'
 	compileOnly 'org.projectlombok:lombok'
 	compileOnly 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
