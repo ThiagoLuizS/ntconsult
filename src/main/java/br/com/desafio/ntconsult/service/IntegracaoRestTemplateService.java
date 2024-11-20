@@ -25,7 +25,7 @@ public class IntegracaoRestTemplateService {
 
     private final RestTemplate restTemplate;
 
-    public RetornoValidadorCpfView validarCPF(String cpf) {
+    public RetornoValidadorCpfView validarCpf(String cpf) {
         try {
             RetornoValidadorCpfView response = restTemplate.getForEntity(urlCpf + "?token=" + token + "&value=" + cpf + "&type=" + type, RetornoValidadorCpfView.class).getBody();
             if(Objects.isNull(response)) {
@@ -43,7 +43,7 @@ public class IntegracaoRestTemplateService {
     }
 
     public void validarCpf(VotoForm votoForm) {
-        RetornoValidadorCpfView validadorCpf = validarCPF(votoForm.getCpf());
+        RetornoValidadorCpfView validadorCpf = validarCpf(votoForm.getCpf());
 
         if(!validadorCpf.getValid()) {
             throw new GlobalException("CPF inválido.");

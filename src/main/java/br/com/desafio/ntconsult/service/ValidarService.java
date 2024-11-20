@@ -15,7 +15,7 @@ public class ValidarService {
     private final IntegracaoRestTemplateService integracaoRestTemplateService;
 
     public StatusCpfView validarCpf(String cpf) {
-        RetornoValidadorCpfView retorno = integracaoRestTemplateService.validarCPF(cpf);
+        RetornoValidadorCpfView retorno = integracaoRestTemplateService.validarCpf(cpf);
 
         StatusCpf status = switch (retorno.getValid()) {
             case true -> StatusCpf.ABLE_TO_VOTE;
