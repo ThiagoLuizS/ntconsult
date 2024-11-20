@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/votos")
@@ -16,7 +18,7 @@ public class VotoController implements VotoResource {
     private final VotoService votoService;
 
     @Override
-    public VotoView save(VotoForm votoForm) {
+    public CompletableFuture<VotoView> save(VotoForm votoForm) {
         return votoService.save(votoForm);
     }
 }

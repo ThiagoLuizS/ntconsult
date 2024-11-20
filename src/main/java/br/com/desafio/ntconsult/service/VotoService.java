@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -36,52 +37,52 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
      * O método está cacheado não permitindo o CPF votar na mesma pauta mais de uma vez.
      * */
     @Cacheable("voto")
-    public VotoView save(VotoForm votoForm) {
+    public CompletableFuture<VotoView> save(VotoForm votoForm) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                log.info(">> save [votoForm={}]", votoForm);
 
-        try {
-            log.info(">> save [votoForm={}]", votoForm);
+                integracaoRestTemplateService.validarCpf(votoForm);
 
-            RetornoValidadorCpfView validadorCpf = integracaoRestTemplateService.validarCPF(votoForm.getCpf());
+                Pauta pauta = pautaService.findPautaByNomeElseThrow(votoForm.getNomePauta());
 
-            if(!validadorCpf.getValid()) {
-                throw new GlobalException("CPF inválido.");
+                validarOpcao(votoForm);
+
+                pautaService.validarSessaoPauta(pauta);
+
+                Voto voto = converterESalvar(votoForm, pauta);
+
+                VotoView view = getConverter().entityToView(voto);
+
+                log.info("<< save [view={}]", view);
+
+                return view;
+
+            } catch (Exception e) {
+                log.error("<< save [error={}]", e.getMessage(), e);
+
+                if(e instanceof GlobalException) {
+                    throw (GlobalException) e;
+                }
+
+                throw new GlobalException("Não foi possivel registrar seu voto.");
             }
+        });
+    }
 
-            Optional<Pauta> pauta = pautaService.findPautaByNome(votoForm.getNomePauta());
-
-            if(pauta.isEmpty()) {
-                throw new GlobalException("A pauta informada não existe.");
-            } else if(Objects.isNull(votoForm.getOpcao())) {
-                throw new GlobalException("A opção informada é inválida.");
-            }
-
-            pautaService.validarSessaoPauta(pauta.get());
-
-            Voto voto = converterESalvar(votoForm, pauta);
-
-            VotoView view = getConverter().entityToView(voto);
-
-            log.info("<< save [view={}]", view);
-
-            return view;
-
-        } catch (Exception e) {
-            log.error("<< save [error={}]", e.getMessage(), e);
-
-            if(e instanceof GlobalException) {
-                throw (GlobalException) e;
-            }
-
-            throw new GlobalException("Não foi possivel registrar seu voto.");
+    private static void validarOpcao(VotoForm votoForm) {
+        if(Objects.isNull(votoForm.getOpcao())) {
+            throw new GlobalException("A opção informada é inválida.");
         }
     }
 
-    private Voto converterESalvar(VotoForm votoForm, Optional<Pauta> pauta) {
+
+    private Voto converterESalvar(VotoForm votoForm, Pauta pauta) {
         Voto voto = getConverter().formToEntity(votoForm);
 
         voto.setOpcao(OpcaoVoto.valueOf(votoForm.getOpcao()));
 
-        voto.setPauta(pauta.get());
+        voto.setPauta(pauta);
 
         voto = getRepository().save(voto);
 

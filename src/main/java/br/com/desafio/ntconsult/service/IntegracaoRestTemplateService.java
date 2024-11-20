@@ -1,6 +1,7 @@
 package br.com.desafio.ntconsult.service;
 
 import br.com.desafio.ntconsult.exception.GlobalException;
+import br.com.desafio.ntconsult.models.dto.form.VotoForm;
 import br.com.desafio.ntconsult.models.dto.view.RetornoValidadorCpfView;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,14 @@ public class IntegracaoRestTemplateService {
                 throw (GlobalException) e;
             }
             throw new GlobalException("Erro ao validar CPF.");
+        }
+    }
+
+    public void validarCpf(VotoForm votoForm) {
+        RetornoValidadorCpfView validadorCpf = validarCPF(votoForm.getCpf());
+
+        if(!validadorCpf.getValid()) {
+            throw new GlobalException("CPF inválido.");
         }
     }
 

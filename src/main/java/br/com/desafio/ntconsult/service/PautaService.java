@@ -95,6 +95,10 @@ public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
         return pautaRepository.findPautaByNome(nome);
     }
 
+    public Pauta findPautaByNomeElseThrow(String nome) {
+        return pautaRepository.findPautaByNome(nome).orElseThrow(() -> new GlobalException("A pauta informada não existe."));
+    }
+
     @Override
     protected JpaRepository<Pauta, Long> getRepository() {
         return pautaRepository;
