@@ -1,7 +1,8 @@
-package br.com.desafio.ntconsult.service;
+package br.com.desafio.ntconsult.service.v1;
 
 import br.com.desafio.ntconsult.exception.GlobalException;
 import br.com.desafio.ntconsult.models.dto.form.VotoForm;
+import br.com.desafio.ntconsult.service.IntegracaoRestTemplateService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,11 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-public class VotoServiceTest {
+public class VotoServiceV1ImplTest {
 
     @BeforeAll
     public static void beforeAll() {
-        MockitoAnnotations.openMocks(VotoServiceTest.class);
+        MockitoAnnotations.openMocks(VotoServiceV1ImplTest.class);
     }
 
     @Test
@@ -34,7 +35,7 @@ public class VotoServiceTest {
     public void whenAssetValidarOpcao_thenVotoFlowAsExpected() {
         VotoForm votoForm = VotoForm.builder().cpf("12178265644").build();
 
-        VotoService votoService = Mockito.mock(VotoService.class);
+        VotoServiceV1Impl votoService = Mockito.mock(VotoServiceV1Impl.class);
 
         Mockito.doThrow(new GlobalException("error")).when(votoService).validarOpcao(votoForm);
 

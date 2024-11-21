@@ -1,6 +1,6 @@
 package br.com.desafio.ntconsult.route;
 
-import br.com.desafio.ntconsult.service.PautaService;
+import br.com.desafio.ntconsult.service.v1.PautaServiceV1Impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
@@ -17,6 +17,6 @@ public class QuartzRouter extends RouteBuilder {
     @Override
     public void configure() throws Exception {
         from(quartzV1).routeId("quartz-getdata-v1").autoStartup(true)
-                .log(LoggingLevel.INFO, ">> calcular total de votos").bean(PautaService.class, "buscarPautasEncerradas");
+                .log(LoggingLevel.INFO, ">> calcular total de votos").bean(PautaServiceV1Impl.class, "buscarPautasEncerradas");
     }
 }

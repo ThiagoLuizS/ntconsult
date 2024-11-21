@@ -1,4 +1,4 @@
-package br.com.desafio.ntconsult.service;
+package br.com.desafio.ntconsult.service.v1;
 
 import br.com.desafio.ntconsult.models.dto.form.PautaForm;
 import br.com.desafio.ntconsult.models.entity.Pauta;
@@ -16,10 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Date;
 
 @ExtendWith(MockitoExtension.class)
-public class PautaServiceTest {
+public class PautaServiceV1ImplTest {
 
     @InjectMocks
-    private PautaService pautaService;
+    private PautaServiceV1Impl pautaService;
     @Mock
     private PautaRepository pautaRepository;
     @Mock
@@ -27,7 +27,7 @@ public class PautaServiceTest {
 
     @BeforeAll
     public static void beforeAll() {
-        MockitoAnnotations.openMocks(PautaServiceTest.class);
+        MockitoAnnotations.openMocks(PautaServiceV1ImplTest.class);
     }
 
     @Test

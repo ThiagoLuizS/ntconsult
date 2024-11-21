@@ -1,25 +1,25 @@
-package br.com.desafio.ntconsult.controller;
+package br.com.desafio.ntconsult.controller.v2;
 
-import br.com.desafio.ntconsult.models.dto.form.PautaForm;
+import br.com.desafio.ntconsult.controller.v1.PautaV1Controller;
 import br.com.desafio.ntconsult.models.dto.view.PautaView;
-import br.com.desafio.ntconsult.resource.PautaResource;
 import br.com.desafio.ntconsult.service.PautaService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
-@RequestMapping("/api/pautas")
-public class PautaController implements PautaResource {
+@RequestMapping("/api/v2/pautas")
+public class PautaV2Controller extends PautaV1Controller {
 
     private final PautaService service;
 
-    @Override
-    public PautaView save(PautaForm pautaForm) {
-        return service.save(pautaForm);
+    @Autowired
+    public PautaV2Controller(@Qualifier("v2") PautaService service) {
+        super(service);
+        this.service = service;
     }
 
     @Override

@@ -1,6 +1,7 @@
-package br.com.desafio.ntconsult.controller;
+package br.com.desafio.ntconsult.controller.v1;
 
 import br.com.desafio.ntconsult.NtconsultApplication;
+import br.com.desafio.ntconsult.controller.AbstractControllerTest;
 import br.com.desafio.ntconsult.models.dto.form.VotoForm;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +33,7 @@ public class VotoControllerTest extends AbstractControllerTest {
 
     @Test
     public void givenVoto_whenPostVoto_thenStatus201Or404() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post("/api/votos")
+        mvc.perform(MockMvcRequestBuilders.post("/api/v1/votos")
                         .content(asJsonString(VotoForm.builder().opcao("SIM").nomePauta("teste").cpf("12178265642").build()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(result -> assertTrue(result.getResponse().getStatus() == 201 || result.getResponse().getStatus() == 404));
@@ -41,7 +42,7 @@ public class VotoControllerTest extends AbstractControllerTest {
 
     @Test
     public void givenPauta_whenPostVoto_thenStatus400() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post("/api/votos")
+        mvc.perform(MockMvcRequestBuilders.post("/api/v1/votos")
                         .content(asJsonString(VotoForm.builder().opcao("SIM").build()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(result -> assertInstanceOf(MethodArgumentNotValidException.class, result.getResolvedException()))

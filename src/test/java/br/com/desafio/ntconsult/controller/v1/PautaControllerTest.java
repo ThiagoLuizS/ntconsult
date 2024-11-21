@@ -1,6 +1,7 @@
-package br.com.desafio.ntconsult.controller;
+package br.com.desafio.ntconsult.controller.v1;
 
 import br.com.desafio.ntconsult.NtconsultApplication;
+import br.com.desafio.ntconsult.controller.AbstractControllerTest;
 import br.com.desafio.ntconsult.models.dto.form.PautaForm;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,28 +33,26 @@ public class PautaControllerTest extends AbstractControllerTest {
 
     @Test
     public void givenPauta_whenPostPauta_thenStatus201Or404() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post("/api/pautas")
+        mvc.perform(MockMvcRequestBuilders.post("/api/v1/pautas")
                         .content(asJsonString(PautaForm.builder().nome("teste").descricao("teste").duracaoSessaoMinuto(1).build()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(result -> assertTrue(result.getResponse().getStatus() == 201 || result.getResponse().getStatus() == 404));
-
     }
 
     @Test
     public void givenPauta_whenGetPauta_thenStatus200() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/api/pautas")
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/pautas")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
 
     @Test
     public void givenPauta_whenPostPauta_thenStatus400() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post("/api/pautas")
+        mvc.perform(MockMvcRequestBuilders.post("/api/v1/pautas")
                         .content(asJsonString(PautaForm.builder().descricao("teste").duracaoSessaoMinuto(1).build()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(result -> assertInstanceOf(MethodArgumentNotValidException.class, result.getResolvedException()))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
-
     }
 
 }
