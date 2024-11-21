@@ -40,6 +40,13 @@ public class PautaControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void givenPauta_whenGetPauta_thenStatus200() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/api/pautas")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+    }
+
+    @Test
     public void givenPauta_whenPostPauta_thenStatus400() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/api/pautas")
                         .content(asJsonString(PautaForm.builder().descricao("teste").duracaoSessaoMinuto(1).build()))

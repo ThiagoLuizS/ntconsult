@@ -46,6 +46,5 @@ public class VotoControllerTest extends AbstractControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(result -> assertInstanceOf(MethodArgumentNotValidException.class, result.getResolvedException()))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
-
     }
 }

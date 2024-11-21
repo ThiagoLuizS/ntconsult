@@ -19,8 +19,4 @@ public class PautaView {
     private String descricao;
     @JsonProperty("sessaoExpirada")
     private boolean calculado;
-
-    @JsonIgnore
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date expiracaoSessao;
 }

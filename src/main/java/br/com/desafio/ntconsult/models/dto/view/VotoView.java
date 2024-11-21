@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class VotoView {
     private Long id;
     private OpcaoVoto opcao;
-    private Long cpf;
+    private String cpf;
     private PautaView pauta;
 }

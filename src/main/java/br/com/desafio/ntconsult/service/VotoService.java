@@ -35,7 +35,8 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
      * Tendo essa validação o método irá retornar do caching a ultima votação cacheada feita pelo CPF.
      * Caso o cache expire o método irá validar se o cpf já votou.
      * */
-    @Cacheable(value = "voto", key = "#votoForm.nomePauta.concat('-').concat(#votoForm.cpf)")
+    @Cacheable(value = "voto", key = "#votoForm.nomePauta.concat('-')" +
+            ".concat(#votoForm.cpf).concat('-').concat(#votoForm.opcao)")
     public CompletableFuture<VotoView> save(VotoForm votoForm) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -85,7 +86,7 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
         log.info(">> SOMA DOS VOTOS [PAUTA={}, SIM={} N={}] <<", pautaName, countVotosSim, countVotosNao);
     }
 
-    private static void validarOpcao(VotoForm votoForm) {
+    public void validarOpcao(VotoForm votoForm) {
         if(Objects.isNull(votoForm.getOpcao())) {
             throw new GlobalException("A opção informada é inválida.");
         }
