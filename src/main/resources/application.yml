@@ -19,10 +19,6 @@ spring:
     port: 5672
     username: guest
     password: guest
-  cloud:
-    stream:
-      input-bindings: calcular-voto
-      output-bindings: calcular-voto
 
 topic:
   calcular-votos-pauta: calcular-votos-pauta
