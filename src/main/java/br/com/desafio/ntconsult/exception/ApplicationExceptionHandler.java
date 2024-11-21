@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -17,8 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -26,17 +26,30 @@ import java.util.stream.Collectors;
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
     private final MessageSource messageSource;
 
+    private static final HttpStatus HTTP_STATUS_NOT_FOUND = HttpStatus.NOT_FOUND;
+    private static final HttpStatus HTTP_STATUS_BAD_REQUEST = HttpStatus.BAD_REQUEST;
+
+
     @ExceptionHandler({GlobalException.class})
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> handleGlobalException(
-            GlobalException exception,
+            GlobalException ex,
             WebRequest request) {
-        ErrorView error = ErrorView.builder()
-                .status(HttpStatus.NOT_FOUND.value())
-                .error(HttpStatus.NOT_FOUND.name())
-                .messages(Collections.singletonList(exception.getMessage())).build();
 
-        return handleExceptionInternal(exception, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        ErrorView error = criarListaDeErros(ex.getMessage(), HTTP_STATUS_NOT_FOUND);
+
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HTTP_STATUS_NOT_FOUND, request);
+    }
+
+    @ExceptionHandler({InvalidDataAccessApiUsageException.class})
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<Object> handleInvalidDataAccessApiUsageException(
+            InvalidDataAccessApiUsageException ex,
+            WebRequest request) {
+
+        ErrorView error = criarListaDeErros(ex.getMessage(), HTTP_STATUS_BAD_REQUEST);
+
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HTTP_STATUS_BAD_REQUEST, request);
     }
 
     @Override
@@ -46,15 +59,22 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
             @jakarta.validation.constraints.NotNull HttpStatusCode status,
             @NotNull WebRequest request) {
 
-        ErrorView error = criarListaDeErros(ex.getBindingResult());
+        ErrorView error = criarListaDeErros(ex.getBindingResult(), HTTP_STATUS_BAD_REQUEST);
 
-        return handleExceptionInternal(ex, error, headers, HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, error, headers, HTTP_STATUS_BAD_REQUEST, request);
     }
 
-    private ErrorView criarListaDeErros(BindingResult bindingResult){
+    private ErrorView criarListaDeErros(BindingResult bindingResult, HttpStatus httpStatus){
         return ErrorView.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(httpStatus.value())
                 .messages(bindingResult.getFieldErrors().stream().map(error -> messageSource.getMessage(error, LocaleContextHolder.getLocale())).collect(Collectors.toList()))
-                .error(HttpStatus.BAD_REQUEST.name()).build();
+                .error(httpStatus.name()).build();
+    }
+
+    private ErrorView criarListaDeErros(String message, HttpStatus httpStatus){
+        return ErrorView.builder()
+                .status(httpStatus.value())
+                .messages(List.of(message))
+                .error(httpStatus.name()).build();
     }
 }

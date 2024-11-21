@@ -11,6 +11,10 @@ import br.com.desafio.ntconsult.service.message.PautaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +26,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -65,6 +70,18 @@ public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
 
             throw new GlobalException("Não foi possivel criar uma pauta.");
         }
+    }
+
+    public Page<PautaView> findByFilter(Pageable pageable, String nome) {
+
+        log.info(">> findByFilter params: [nome={}] [pageable={}]", nome, pageable);
+        Page<Pauta> page = pautaRepository.findByFilter(pageable, nome);
+
+        List<PautaView> views = page.getContent().stream().map(pautaMapper::entityToView).toList();
+
+        log.info("<< findByFilter params: [nome={}] [pageable={}, content={}]", nome, pageable, views.size());
+
+        return new PageImpl<>(views, pageable, page.getTotalElements());
     }
 
     private Pauta converterESalvar(PautaForm pautaForm) {
