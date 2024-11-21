@@ -52,9 +52,7 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
 
                 validarVotoByCpfAndNomePauta(votoForm.getCpf(), votoForm.getNomePauta());
 
-                Voto voto = converterESalvar(votoForm, pauta);
-
-                VotoView view = getConverter().entityToView(voto);
+                VotoView view = converterESalvar(votoForm, pauta);
 
                 log.info("<< save [view={}]", view);
 
@@ -92,16 +90,14 @@ public class VotoService extends AbstractService<Voto, VotoView, VotoForm>{
         }
     }
 
-    private Voto converterESalvar(VotoForm votoForm, Pauta pauta) {
+    private VotoView converterESalvar(VotoForm votoForm, Pauta pauta) {
         Voto voto = getConverter().formToEntity(votoForm);
 
         voto.setOpcao(OpcaoVoto.valueOf(votoForm.getOpcao()));
 
         voto.setPauta(pauta);
 
-        voto = getRepository().save(voto);
-
-        return voto;
+        return saveToView(voto);
     }
 
     @Override

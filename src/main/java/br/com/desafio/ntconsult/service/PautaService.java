@@ -54,9 +54,7 @@ public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
                 throw new GlobalException("Essa pauta já existe, cadastre com outro nome.");
             }
 
-            Pauta pauta = converterESalvar(pautaForm);
-
-            PautaView view = getConverter().entityToView(pauta);
+            PautaView view = converterESalvar(pautaForm);
 
             log.info("<< save [pautaView={}]", view);
 
@@ -84,7 +82,7 @@ public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
         return new PageImpl<>(views, pageable, page.getTotalElements());
     }
 
-    private Pauta converterESalvar(PautaForm pautaForm) {
+    private PautaView converterESalvar(PautaForm pautaForm) {
         LocalDateTime now = LocalDateTime.now().plusMinutes(DEFAULT_MINUTES);
         ZonedDateTime newNow = now.atZone(ZoneId.systemDefault());
 
@@ -95,9 +93,8 @@ public class PautaService extends AbstractService<Pauta, PautaView, PautaForm> {
 
         Pauta pauta = getConverter().formToEntity(pautaForm);
         pauta.setExpiracaoSessao(Date.from(newNow.toInstant()));
-        pauta = getRepository().save(pauta);
 
-        return pauta;
+        return saveToView(pauta);
     }
 
     @Transactional
