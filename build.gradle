@@ -39,6 +39,7 @@ dependencies {
 	implementation 'org.apache.camel.springboot:camel-spring-boot-starter:4.8.1'
 	implementation 'org.apache.camel:camel-cron:4.8.1'
 	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.4.0'
 	compileOnly 'org.projectlombok:lombok'
 	compileOnly 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

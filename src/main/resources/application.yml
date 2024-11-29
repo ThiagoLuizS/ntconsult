@@ -18,6 +18,18 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  health:
+    readinessstate:
+      enabled: true
+    livenessstate:
+      enabled: true
+
+
 topic:
   calcular-votos-pauta: calcular-votos-pauta
 
