@@ -1,83 +1,12 @@
 # Documentação
 ### Introdução
 
-#### <strong>Para executar o projeto é necessário que tenha o docker rodando na sua maquina local. </strong> </br>
+### Projeto com provisionamento de infraestrutura para utilização de recursos AWS
 
-<strong>Observação: Nesse projeto iremos utilizar o JAVA 23.</strong>
-
-Para esse projeto irei utilizar o <b>RabbitMQ</b> para trabalhar com mensageria. </br>
-
-Utilizaremos uma imagem docker do RabbitMQ, sendo necessário executar o seguinte comando no terminal
+Em um cenário que é preciso provisionar um banco de dados (RDS), rabbitMQ (EKS) e ambiente de backend (EKS)
 
 ```
-docker run -d --hostname local-rabbit --name rabbit-mq -p 15672:15672 -p 5672:5672 rabbitmq:3.6.9-management
-```
-Após a execução desse comando, a imagem será baixada. Utilize o comando abaixo:
-
-```
-docker ps
-```
-Deverá ser exibido um log semelhante a este no console:
-
-```
-CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
-
-4040853541e8 rabbitmq:3.6.9-management “docker-entrypoint.s…” 6 days ago Up 3 days 4369/tcp, 5671/tcp, 0.0.0.0:5672->5672/tcp, 15671/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp rabbit-mq
-```
-Se tudo deu certo até agora, essa imagem docker do RabbitMQ também irá prover uma interface gráfica para utilização do message broker. Através do browser é possível acessar esta interface utilizando o seguinte endereço e credenciais:
-
-```
-http://localhost:15672
-
-username: guest
-password: guest
-```
-
-Isso nos dará acesso ao seguinte Dashboard:
-
-<img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*XNmewEfxux6WmpmY2qHDSg.png"> </br>
-
-Configuração do RabbitMQ definida no application.yml
-```
-spring:
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-```
-
-<strong>Observação: Agora precisaremos cadastrar um tópico. Ainda dentro da interface selecione a aba "Queues" e cadastre o tópico "calcular-votos-pauta".</strong> </br>
-
-#
-
-#### <strong>Mudando para a parte da aplicação o banco de dados que iremos utilizar é o H2 e sua configuração já está definida no application.yml. Sendo assim não será necessário criar um banco manualmente.</strong></br>
-
-Configuração do banco H2 definida no application.yml:
-
-```
-spring:
-  datasource:
-    url: jdbc:h2:~/test;DB_CLOSE_ON_EXIT=false
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-```
-Sendo assim <strong>pode iniciar a aplicação</strong> e será possivel acessar o banco atráves do seu browser na url:
-```
-http://localhost:8080/h2-console
-```
-Isso nos dará acesso a interface semelhante a essa:
-
-<img src="https://s3.amazonaws.com/gasparbarancelli.com/screen_h2_console_login.png"></br>
-
-Com a aplicação iniciada e sem haver nenhum problema em seu funcionamento é possivel obter o mapeamento dos endpoints através do <b>Swagger</b>, acessando a url:
-```
-http://localhost:8080/swagger-ui/index.html
+https://github.com/ThiagoLuizS/terraform-ntconsult
 ```
 
 ### Regras de Negócio
