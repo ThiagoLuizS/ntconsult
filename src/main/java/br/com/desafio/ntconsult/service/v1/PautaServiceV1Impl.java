@@ -21,11 +21,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,6 +97,7 @@ public class PautaServiceV1Impl extends AbstractService<Pauta, PautaView, PautaF
 
         Pauta pauta = getConverter().formToEntity(pautaForm);
         pauta.setExpiracaoSessao(Date.from(newNow.toInstant()));
+        pauta.setDataCadastro(new Date());
 
         return saveToView(pauta);
     }

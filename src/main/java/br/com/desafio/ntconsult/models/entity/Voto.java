@@ -13,23 +13,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "VOTO")
+@Table(name = "tb_voto")
 public class Voto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_voto")
+    @SequenceGenerator(name = "seq_id_voto", sequenceName = "seq_id_voto", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "seq_id_voto")
     private Long id;
 
-    @Column(name = "OPCAO", nullable = false)
+    @Column(name = "opcao", nullable = false)
     @Enumerated(EnumType.STRING)
     private OpcaoVoto opcao;
 
-    @Column(name = "CPF", nullable = false)
+    @Column(name = "cpf", nullable = false)
     private String cpf;
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "PAUTA_ID")
+    @JoinColumn(name = "pauta_id")
     private Pauta pauta;
 
 }

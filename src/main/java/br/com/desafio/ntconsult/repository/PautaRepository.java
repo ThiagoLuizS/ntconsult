@@ -26,6 +26,6 @@ public interface PautaRepository extends JpaRepository<Pauta, Long> {
 
     @Query("select p From Pauta p " +
             "where 1 = 1 " +
-            "and (:nome is null or p.nome like CONCAT('%', :nome, '%'))")
+            "and (:nome is null or p.nome ilike CONCAT('%', cast(:nome as string), '%'))")
     Page<Pauta> findByFilter(Pageable pageable, @Param("nome") String nome);
 }

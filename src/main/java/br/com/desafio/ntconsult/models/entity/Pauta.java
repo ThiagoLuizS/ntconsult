@@ -1,7 +1,5 @@
 package br.com.desafio.ntconsult.models.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,34 +7,35 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PAUTA")
+@Table(name = "tb_pauta")
 public class Pauta {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_pauta")
+    @SequenceGenerator(name = "seq_id_pauta", sequenceName = "seq_id_pauta", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "seq_id_pauta")
     private Long id;
 
-    @Column(name = "NOME", nullable = false)
+    @Column(name = "nome")
     private String nome;
 
-    @Column(name = "DESCRICAO", nullable = false)
+    @Column(name = "descricao")
     private String descricao;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "DATA_CADASTRO")
+    @Column(name = "data_cadastro")
     private Date dataCadastro;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "EXPIRACAO_SESSAO")
+    @Column(name = "expiracao_sessao")
     private Date expiracaoSessao;
 
-    @Column(name = "CALCULADO")
+    @Column(name = "calculado")
     private boolean calculado;
 }
