@@ -1,6 +1,21 @@
 # Documentação
 ### Introdução
 
+### Projeto com provisionamento de infraestrutura para utilização de recursos AWS
+
+Em um cenário que é preciso provisionar um banco de dados (RDS), rabbitMQ (EKS) e ambiente de backend (EKS)
+
+```
+https://github.com/ThiagoLuizS/terraform-ntconsult
+```
+
+API configurada com um exemplo de utilização dos recursos provisionados
+
+```
+https://github.com/ThiagoLuizS/ntconsult/tree/staging
+```
+### Projeto para execução local na maquina local
+
 #### <strong>Para executar o projeto é necessário que tenha o docker rodando na sua maquina local. </strong> </br>
 
 <strong>Observação: Nesse projeto iremos utilizar o JAVA 23.</strong>
@@ -97,35 +112,35 @@ Para estrutura de pastas do projeto está sendo utilizado o MVC. Separados com o
 
 - <b>Resource</b>
 
-    Interfaces com os métodos definidos com anotações spring.web (métodos HTTP). As interfaces nessa pasta são implementadas nas classes de controler.
+  Interfaces com os métodos definidos com anotações spring.web (métodos HTTP). As interfaces nessa pasta são implementadas nas classes de controler.
 
 - <b>Controller</b>
 
-    Classes que implementam a resource (interface) e tem como anotação em sua assinatura definir seu objetivo de criação de métodos de entrada e saída de dados. (Endpoints).
+  Classes que implementam a resource (interface) e tem como anotação em sua assinatura definir seu objetivo de criação de métodos de entrada e saída de dados. (Endpoints).
 
 - <b>Service</b>
 
-    Classes de serviço que contemplam todas as regras de negócio do projeto. Essas classes injetam repositórios, mapeamentos e validações. 
+  Classes de serviço que contemplam todas as regras de negócio do projeto. Essas classes injetam repositórios, mapeamentos e validações.
 
 - <b>Repository</b>
 
-    Interfaces que extendem a JPA e tem como objetivo construir uma ponte para camadas de persitências de dados utilizando a lib do Hibernate ou SpringData
+  Interfaces que extendem a JPA e tem como objetivo construir uma ponte para camadas de persitências de dados utilizando a lib do Hibernate ou SpringData
 
 - <b>Annotation</b>
 
-    Interfaces de anotação criadas para auxiliar na validação de métodos e atributos. Como validações e injeções de Beans.
+  Interfaces de anotação criadas para auxiliar na validação de métodos e atributos. Como validações e injeções de Beans.
 
 - <b>Exception</b>
 
-    Classes que agregam todas as exceções não tratadas por meio de um interceptor advance e convertida em um retorno padrão. Por meio dela é possivel controlar o tipo de exceção, mensagem e corpo do response nas requisições HTTP.
+  Classes que agregam todas as exceções não tratadas por meio de um interceptor advance e convertida em um retorno padrão. Por meio dela é possivel controlar o tipo de exceção, mensagem e corpo do response nas requisições HTTP.
 
 - <b>Configuration</b>
 
-    Classes com objetivo de injetar uma biblioteca no scopo de inicialização de uma aplicação, parametrizar o funcionamento destas libs, configurar partes de segurança e replicar funcionalidades para diversos componentes.
+  Classes com objetivo de injetar uma biblioteca no scopo de inicialização de uma aplicação, parametrizar o funcionamento destas libs, configurar partes de segurança e replicar funcionalidades para diversos componentes.
 
 - <b>Route</b>
 
-    Classe responsável por configurar o Apache Camel e mapear a execução dos metodos. Como se trata de uma classe de configuracao/regra fica indefinido se a classe dentro desta pasta deve pertencer as classes de configuração. Então em alguns projetos fica por critério deixar claro sua definição e escopo.
+  Classe responsável por configurar o Apache Camel e mapear a execução dos metodos. Como se trata de uma classe de configuracao/regra fica indefinido se a classe dentro desta pasta deve pertencer as classes de configuração. Então em alguns projetos fica por critério deixar claro sua definição e escopo.
 
 #### Apache Camel
 
